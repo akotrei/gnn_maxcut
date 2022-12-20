@@ -1,40 +1,12 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
-import networkx as nx
 
 from core.utils import (
     to_binary,
     qubo_matrix,
     graph_regular_k_generate,
     graph_make_random_weight,
+    show_graph_with_labels,
 )
-
-
-def show_graph_with_labels(adjacency, labels, bits, legend):
-    color_map = []
-    for node in bits:
-        if node == 1:
-            color_map.append("blue")
-        else:
-            color_map.append("green")
-
-    np.fill_diagonal(adjacency, 0)
-    G = nx.from_numpy_matrix(adjacency, create_using=nx.DiGraph)
-    layout = nx.spring_layout(G)
-    edge_labels = nx.get_edge_attributes(G, "weight")
-    nx.draw(G, layout, node_color=color_map, labels=labels)
-    nx.draw_networkx_edge_labels(G, pos=layout, edge_labels=edge_labels)
-
-    extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor="none", linewidth=4)
-    plt.legend(
-        [
-            extra,
-        ],
-        (f"max_cut_value is {legend}",),
-        prop={"size": 20},
-    )
-    plt.show()
 
 
 def find_max_cut(adjacency: np.array):

@@ -1,4 +1,7 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+import networkx as nx
 
 
 def to_binary(val: int, bits: int):
@@ -65,12 +68,41 @@ def graph_make_random_weight(adjacency):
     return adjacency
 
 
+def show_graph_with_labels(adjacency, labels, bits, legend=None):
+    color_map = []
+    for node in bits:
+        if node == 1:
+            color_map.append("blue")
+        else:
+            color_map.append("green")
+
+    np.fill_diagonal(adjacency, 0)
+    G = nx.from_numpy_matrix(adjacency, create_using=nx.DiGraph)
+    layout = nx.spring_layout(G)
+    edge_labels = nx.get_edge_attributes(G, "weight")
+    nx.draw(G, layout, node_color=color_map, labels=labels)
+    nx.draw_networkx_edge_labels(G, pos=layout, edge_labels=edge_labels)
+
+    extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor="none", linewidth=4)
+    if legend is not None:
+        plt.legend(
+            [
+                extra,
+            ],
+            (f"max_cut_value is {legend}",),
+            prop={"size": 20},
+        )
+    plt.show()
+
+
 if __name__ == "__main__":
-    N = 5
-    K = 2
+    N = 40
+    K = 20
 
     adjacency = graph_regular_k_generate(N, K)
     adjacency = graph_make_random_weight(adjacency)
     print(adjacency)
     print(adjacency.sum(axis=1))
     print(check_symmetric(adjacency))
+
+    show_graph_with_labels(adjacency, {i: i for i in range(len(adjacency))}, [1 for _ in range(len(adjacency))])
