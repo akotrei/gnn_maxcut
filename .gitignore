@@ -1,0 +1,8 @@
+quantumflow-qaoa/
+env/
+
+.ipynb_checkpoints
+
+__pycache__/
+*.py[cod]
+*$py.class
